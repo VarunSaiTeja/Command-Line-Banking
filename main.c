@@ -14,7 +14,7 @@ struct account
     char account_no[11];
     char mail[40];
     int balance;
-    int pin[4];
+    int pin;
     char city[15];
 };
 
