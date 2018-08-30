@@ -66,7 +66,14 @@ int main(int arg_count,char* arguments[])
     {
         if(arg_count==4)
         {
-            deposit(arguments[2],atoi(arguments[3]));
+            if(atoi(arguments[3])>=0)
+            {
+                deposit(arguments[2],atoi(arguments[3]));
+            }
+            else
+            {
+                printf("invalid amount");
+            }
         }
         else
         {
@@ -78,7 +85,14 @@ int main(int arg_count,char* arguments[])
     {
         if(arg_count==4)
         {
-            withdraw(arguments[2],atoi(arguments[3]));
+            if(atoi(arguments[3])>0)
+            {
+                withdraw(arguments[2],atoi(arguments[3]));
+            }
+            else
+            {
+                printf("invalid amount");
+            }
         }
         else
         {
@@ -90,7 +104,14 @@ int main(int arg_count,char* arguments[])
     {
         if(arg_count==5)
         {
-            transfer(arguments[2],arguments[3],atoi(arguments[4]));
+            if(atoi(arguments[4])>0)
+            {
+                transfer(arguments[2],arguments[3],atoi(arguments[4]));
+            }
+            else
+            {
+                printf("invalid amount");
+            }
         }
         else
         {
