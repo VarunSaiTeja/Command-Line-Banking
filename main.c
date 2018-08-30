@@ -55,9 +55,6 @@ void delete_db()
 
 void create_account(char first_name[],char last_name[],char account_no[],char mail[],int balance,int pin,char city[])
 {
-    SYSTEMTIME time;
-    GetLocalTime(&time);
-
     FILE *accounts;
     accounts=fopen("accounts.txt","a");
     fprintf(accounts,"%s %s %s %s %d %d %s\n",first_name,last_name,account_no,mail,balance,pin,city);
