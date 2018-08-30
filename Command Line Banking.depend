@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1535623492 source:d:\coding\c\command line banking\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<time.h>
+

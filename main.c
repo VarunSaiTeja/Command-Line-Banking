@@ -7,6 +7,19 @@ void create_db();
 void delete_db();
 void create_account(char first_name[],char last_name[],char account_no[],char mail[],int balance,int pin,char city[]);
 
+struct account
+{
+    char first_name[20];
+    char last_name[20];
+    char account[10];
+    char mail[40];
+    int balance;
+    int pin[4];
+    char city[15];
+};
+
+struct account user;
+
 int main(int arg_count,char* arguments[])
 {
     if(strcmp(arguments[1],"create_db")==0)
