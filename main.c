@@ -260,6 +260,7 @@ void deposit(char account_no[],int amount)
 void withdraw(char account_no[],int amount)
 {
     int account_found=FALSE;
+    int sufficient=FALSE;
     FILE *accounts,*temp;
 
     accounts=fopen("accounts.txt","r");
@@ -269,33 +270,45 @@ void withdraw(char account_no[],int amount)
         if(strcmp(user.account_no,account_no)==0)
         {
             account_found=TRUE;
+            if(user.balance>=amount)
+            {
+                sufficient=TRUE;
+            }
         }
     }
     fclose(accounts);
 
     if(account_found==TRUE)
     {
-        accounts=fopen("accounts.txt","r");
-        temp=fopen("temp.txt","w");
-
-        while(!feof(accounts))
+        if(sufficient==TRUE)
         {
-            fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
-            if(strcmp(user.account_no,account_no)!=0)
+            accounts=fopen("accounts.txt","r");
+            temp=fopen("temp.txt","w");
+
+            while(!feof(accounts))
             {
-                fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.pin,user.city);
+                fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+                if(strcmp(user.account_no,account_no)!=0)
+                {
+                    fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.pin,user.city);
+                }
+                else
+                {
+                    fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance-amount),user.pin,user.city);
+                }
             }
-            else
-            {
-                fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance-amount),user.pin,user.city);
-            }
+
+            fclose(accounts);
+            fclose(temp);
+            remove("accounts.txt");
+            rename("temp.txt","accounts.txt");
+            printf("amount withdrawn");
+        }
+        else
+        {
+            printf("insufficient amount");
         }
 
-        fclose(accounts);
-        fclose(temp);
-        remove("accounts.txt");
-        rename("temp.txt","accounts.txt");
-        printf("amount withdrawn");
     }
     else
     {
@@ -307,6 +320,7 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount)
 {
     int sender_account_found=FALSE;
     int receiver_account_found=FALSE;
+    int sufficient=FALSE;
     FILE *accounts,*temp;
 
     accounts=fopen("accounts.txt","r");
@@ -317,6 +331,10 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount)
         if(strcmp(user.account_no,sender_account_no)==0)
         {
             sender_account_found=TRUE;
+            if(user.balance>=amount)
+            {
+                sufficient=TRUE;
+            }
         }
 
         if(strcmp(user.account_no,receiver_account_no)==0)
@@ -328,35 +346,42 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount)
 
     if(sender_account_found==TRUE && receiver_account_found==TRUE)
     {
-        accounts=fopen("accounts.txt","r");
-        temp=fopen("temp.txt","w");
-
-        while(!feof(accounts))
+        if(sufficient==TRUE)
         {
-            fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
-            if(strcmp(user.account_no,sender_account_no)!=0 && strcmp(user.account_no,receiver_account_no)!=0)
-            {
-                fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.pin,user.city);
-            }
-            else
-            {
-                if(strcmp(user.account_no,sender_account_no)==0)
-                {
-                    fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance-amount),user.pin,user.city);
-                }
+            accounts=fopen("accounts.txt","r");
+            temp=fopen("temp.txt","w");
 
-                if(strcmp(user.account_no,receiver_account_no)==0)
+            while(!feof(accounts))
+            {
+                fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+                if(strcmp(user.account_no,sender_account_no)!=0 && strcmp(user.account_no,receiver_account_no)!=0)
                 {
-                    fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance+amount),user.pin,user.city);
+                    fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.pin,user.city);
+                }
+                else
+                {
+                    if(strcmp(user.account_no,sender_account_no)==0)
+                    {
+                        fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance-amount),user.pin,user.city);
+                    }
+
+                    if(strcmp(user.account_no,receiver_account_no)==0)
+                    {
+                        fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance+amount),user.pin,user.city);
+                    }
                 }
             }
+
+            fclose(accounts);
+            fclose(temp);
+            remove("accounts.txt");
+            rename("temp.txt","accounts.txt");
+            printf("amount transferred");
         }
-
-        fclose(accounts);
-        fclose(temp);
-        remove("accounts.txt");
-        rename("temp.txt","accounts.txt");
-        printf("amount transferred");
+        else
+        {
+            printf("insufficient amount");
+        }
     }
     else
     {
