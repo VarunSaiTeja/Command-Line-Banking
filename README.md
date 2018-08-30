@@ -25,3 +25,21 @@ To create new account
 
 "Command Line Banking" create_account Varun Teja 9010075670 varun@gmail.com 500 1000 Darsi
 ___
+To deposit amount
+
+(application name) deposit (account_no) (amount)
+
+"Command Line Banking" deposit 9010075670 9998889998 5000
+___
+To withdraw amount
+
+(application name) withdraw (account_no) (amount)
+
+"Command Line Banking" withdraw 9010075670 5000
+___
+To transfer amount
+
+(application name) transfer (sender_account_no) (receiver account_no) (amount)
+
+"Command Line Banking" transfer 9010075670 9999889999 5000
+___
