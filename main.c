@@ -1,0 +1,9 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <windows.h>
+#include <time.h>
+
+int main(int arg_count,char* arguments[])
+{
+    return 0;
+}
