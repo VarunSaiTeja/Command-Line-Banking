@@ -68,10 +68,30 @@ void delete_db()
 
 void create_account(char first_name[],char last_name[],char account_no[],char mail[],int balance,int pin,char city[])
 {
+    int account_exist=FALSE;
+
     FILE *accounts;
-    accounts=fopen("accounts.txt","a");
-    fprintf(accounts,"%s %s %s %s %d %d %s\n",first_name,last_name,account_no,mail,balance,pin,city);
+
+    accounts=fopen("accounts.txt","r");
+    while(!feof(accounts))
+    {
+        fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+        if(strcmp(user.account_no,account_no)==0)
+        {
+            account_exist=TRUE;
+        }
+    }
     fclose(accounts);
 
-    printf("account created");
+    if(account_exist==FALSE)
+    {
+        accounts=fopen("accounts.txt","a");
+        fprintf(accounts,"%s %s %s %s %d %d %s\n",first_name,last_name,account_no,mail,balance,pin,city);
+        fclose(accounts);
+        printf("account created");
+    }
+    else
+    {
+        printf("account exists");
+    }
 }
