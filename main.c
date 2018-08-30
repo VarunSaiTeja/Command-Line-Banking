@@ -8,6 +8,7 @@ void delete_db();
 void create_account(char first_name[],char last_name[],char account_no[],char mail[],int balance,int pin,char city[]);
 void close_account(char account_no[]);
 void deposit(char account_no[],int amount);
+void withdraw(char account_no[],int amount);
 
 struct account
 {
@@ -71,6 +72,19 @@ int main(int arg_count,char* arguments[])
             printf("invalid arguments");
         }
     }
+
+    if(strcmp(arguments[1],"withdraw")==0)
+    {
+        if(arg_count==4)
+        {
+            withdraw(arguments[2],atoi(arguments[3]));
+        }
+        else
+        {
+            printf("invalid arguments");
+        }
+    }
+
     return 0;
 }
 
@@ -202,6 +216,52 @@ void deposit(char account_no[],int amount)
         remove("accounts.txt");
         rename("temp.txt","accounts.txt");
         printf("amount deposited");
+    }
+    else
+    {
+        printf("account not found");
+    }
+}
+
+void withdraw(char account_no[],int amount)
+{
+    int account_found=FALSE;
+    FILE *accounts,*temp;
+
+    accounts=fopen("accounts.txt","r");
+    while(!feof(accounts))
+    {
+        fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+        if(strcmp(user.account_no,account_no)==0)
+        {
+            account_found=TRUE;
+        }
+    }
+    fclose(accounts);
+
+    if(account_found==TRUE)
+    {
+        accounts=fopen("accounts.txt","r");
+        temp=fopen("temp.txt","w");
+
+        while(!feof(accounts))
+        {
+            fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+            if(strcmp(user.account_no,account_no)!=0)
+            {
+                fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.pin,user.city);
+            }
+            else
+            {
+                fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance-amount),user.pin,user.city);
+            }
+        }
+
+        fclose(accounts);
+        fclose(temp);
+        remove("accounts.txt");
+        rename("temp.txt","accounts.txt");
+        printf("amount withdrawn");
     }
     else
     {
