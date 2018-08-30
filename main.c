@@ -6,6 +6,7 @@
 void create_db();
 void delete_db();
 void create_account(char first_name[],char last_name[],char account_no[],char mail[],int balance,int pin,char city[]);
+void close_account(char account_no[]);
 
 struct account
 {
@@ -39,6 +40,18 @@ int main(int arg_count,char* arguments[])
         if(arg_count==9)
         {
             create_account(arguments[2],arguments[3],arguments[4],arguments[5],atoi(arguments[6]),atoi(arguments[7]),arguments[8]);
+        }
+        else
+        {
+            printf("invalid arguments");
+        }
+    }
+
+    if(strcmp(arguments[1],"close_account")==0)
+    {
+        if(arg_count==3)
+        {
+            close_account(arguments[2]);
         }
         else
         {
@@ -93,5 +106,47 @@ void create_account(char first_name[],char last_name[],char account_no[],char ma
     else
     {
         printf("account exists");
+    }
+}
+
+void close_account(char account_no[])
+{
+    int account_found=FALSE;
+    FILE *accounts,*temp;
+
+    accounts=fopen("accounts.txt","r");
+    while(!feof(accounts))
+    {
+        fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+        if(strcmp(user.account_no,account_no)==0)
+        {
+            account_found=TRUE;
+        }
+    }
+    fclose(accounts);
+
+    if(account_found==TRUE)
+    {
+        accounts=fopen("accounts.txt","r");
+        temp=fopen("temp.txt","w");
+
+        while(!feof(accounts))
+        {
+            fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+            if(strcmp(user.account_no,account_no)!=0)
+            {
+                fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.pin,user.city);
+            }
+        }
+
+        fclose(accounts);
+        fclose(temp);
+        remove("accounts.txt");
+        rename("temp.txt","accounts.txt");
+        printf("account closed");
+    }
+    else
+    {
+        printf("account not found");
     }
 }
