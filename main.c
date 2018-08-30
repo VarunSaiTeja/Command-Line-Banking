@@ -10,6 +10,7 @@ void close_account(char account_no[]);
 void deposit(char account_no[],int amount);
 void withdraw(char account_no[],int amount);
 void transfer(char sender_account_no[],char receiver_account_no[],int amount);
+void balance(char account_no[]);
 
 struct account
 {
@@ -117,6 +118,11 @@ int main(int arg_count,char* arguments[])
         {
             printf("invalid arguments");
         }
+    }
+
+    if(strcmp(arguments[1],"balance")==0)
+    {
+        balance(arguments[2]);
     }
 
     return 0;
@@ -400,5 +406,28 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount)
                 printf("receiver account not found");
             }
         }
+    }
+}
+
+void balance(char accoun_no[])
+{
+    int accoun_found=FALSE;
+    FILE *accounts;
+
+    accounts=fopen("accounts.txt","r");
+    while(!feof(accounts))
+    {
+        fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+        if(strcmp(user.account_no,accoun_no)==0)
+        {
+            accoun_found=TRUE;
+            printf("%d",user.balance);
+        }
+    }
+    fclose(accounts);
+
+    if(accoun_found==FALSE)
+    {
+        printf("account not found");
     }
 }
