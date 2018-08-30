@@ -308,7 +308,6 @@ void withdraw(char account_no[],int amount)
         {
             printf("insufficient amount");
         }
-
     }
     else
     {
