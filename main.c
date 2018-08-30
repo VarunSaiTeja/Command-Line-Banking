@@ -9,6 +9,7 @@ void create_account(char first_name[],char last_name[],char account_no[],char ma
 void close_account(char account_no[]);
 void deposit(char account_no[],int amount);
 void withdraw(char account_no[],int amount);
+void transfer(char sender_account_no[],char receiver_account_no[],int amount);
 
 struct account
 {
@@ -78,6 +79,18 @@ int main(int arg_count,char* arguments[])
         if(arg_count==4)
         {
             withdraw(arguments[2],atoi(arguments[3]));
+        }
+        else
+        {
+            printf("invalid arguments");
+        }
+    }
+
+    if(strcmp(arguments[1],"transfer")==0)
+    {
+        if(arg_count==5)
+        {
+            transfer(arguments[2],arguments[3],atoi(arguments[4]));
         }
         else
         {
@@ -266,5 +279,81 @@ void withdraw(char account_no[],int amount)
     else
     {
         printf("account not found");
+    }
+}
+
+void transfer(char sender_account_no[],char receiver_account_no[],int amount)
+{
+    int sender_account_found=FALSE;
+    int receiver_account_found=FALSE;
+    FILE *accounts,*temp;
+
+    accounts=fopen("accounts.txt","r");
+    while(!feof(accounts))
+    {
+        fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+
+        if(strcmp(user.account_no,sender_account_no)==0)
+        {
+            sender_account_found=TRUE;
+        }
+
+        if(strcmp(user.account_no,receiver_account_no)==0)
+        {
+            receiver_account_found=TRUE;
+        }
+    }
+    fclose(accounts);
+
+    if(sender_account_found==TRUE && receiver_account_found==TRUE)
+    {
+        accounts=fopen("accounts.txt","r");
+        temp=fopen("temp.txt","w");
+
+        while(!feof(accounts))
+        {
+            fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+            if(strcmp(user.account_no,sender_account_no)!=0 && strcmp(user.account_no,receiver_account_no)!=0)
+            {
+                fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.pin,user.city);
+            }
+            else
+            {
+                if(strcmp(user.account_no,sender_account_no)==0)
+                {
+                    fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance-amount),user.pin,user.city);
+                }
+
+                if(strcmp(user.account_no,receiver_account_no)==0)
+                {
+                    fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance+amount),user.pin,user.city);
+                }
+            }
+        }
+
+        fclose(accounts);
+        fclose(temp);
+        remove("accounts.txt");
+        rename("temp.txt","accounts.txt");
+        printf("amount transferred");
+    }
+    else
+    {
+        if(sender_account_found==FALSE && receiver_account_found==FALSE)
+        {
+            printf("sender and receiver account not found");
+        }
+        else
+        {
+            if(sender_account_found==FALSE)
+            {
+                printf("sender account not found");
+            }
+
+            if(receiver_account_found==FALSE)
+            {
+                printf("receiver account not found");
+            }
+        }
     }
 }
