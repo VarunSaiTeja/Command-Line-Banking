@@ -11,7 +11,7 @@ struct account
 {
     char first_name[20];
     char last_name[20];
-    char account[10];
+    char account_no[10];
     char mail[40];
     int balance;
     int pin[4];
