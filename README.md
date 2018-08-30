@@ -27,6 +27,18 @@ To create new account
 
 "Command Line Banking" create_account Varun Teja 9010075670 varun@gmail.com 500 1000 Darsi
 ___
+To close account
+
+(application name) close_account (account_no)
+
+"Command Line Banking" close_account 9010075670
+___
+To check account balance
+
+(application name) balance (account_no)
+
+"Command Line Banking" balance 9010075670
+___
 To deposit amount
 
 (application name) deposit (account_no) (amount)
