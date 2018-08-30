@@ -1,6 +1,8 @@
 # Command-Line-Banking
 A banking software works with command line arguments
 
+Your (user) moile number will be assigned as his/her account number
+
 When trying to pass arguments via cmd to application
 
 if application name is one word then no need to specify double quotes, otherwise specify application name with double quotes
