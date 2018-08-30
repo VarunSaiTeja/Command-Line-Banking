@@ -66,7 +66,7 @@ int main(int arg_count,char* arguments[])
     {
         if(arg_count==4)
         {
-            if(atoi(arguments[3])>=0)
+            if(atoi(arguments[3])>0)
             {
                 deposit(arguments[2],atoi(arguments[3]));
             }
