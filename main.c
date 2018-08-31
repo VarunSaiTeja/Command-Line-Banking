@@ -253,6 +253,21 @@ void deposit(char account_no[],int amount)
     }
     fclose(accounts);
 
+    if(account_found==FALSE)
+    {
+        accounts=fopen("accounts.txt","r");
+        while(!feof(accounts))
+        {
+            fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+            if(strcmp(user.mail,account_no)==0)
+            {
+                strcpy(account_no,user.account_no);
+                account_found=TRUE;
+            }
+        }
+        fclose(accounts);
+    }
+
     if(account_found==TRUE)
     {
         accounts=fopen("accounts.txt","r");
