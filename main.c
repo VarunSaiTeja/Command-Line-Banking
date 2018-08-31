@@ -6,11 +6,11 @@
 void create_db();
 void delete_db();
 void create_account(char first_name[],char last_name[],char account_no[],char mail[],int balance,int pin,char city[]);
-void close_account(char account_no[]);
+void close_account(char account_no[],int pin);
 void deposit(char account_no[],int amount);
-void withdraw(char account_no[],int amount);
-void transfer(char sender_account_no[],char receiver_account_no[],int amount);
-void balance(char account_no[]);
+void withdraw(char account_no[],int amount,int pin);
+void transfer(char sender_account_no[],char receiver_account_no[],int amount,int pin);
+void balance(char account_no[],int pin);
 
 struct account
 {
@@ -53,9 +53,9 @@ int main(int arg_count,char* arguments[])
 
     if(strcmp(arguments[1],"close_account")==0)
     {
-        if(arg_count==3)
+        if(arg_count==4)
         {
-            close_account(arguments[2]);
+            close_account(arguments[2],atoi(arguments[3]));
         }
         else
         {
@@ -84,11 +84,11 @@ int main(int arg_count,char* arguments[])
 
     if(strcmp(arguments[1],"withdraw")==0)
     {
-        if(arg_count==4)
+        if(arg_count==5)
         {
             if(atoi(arguments[3])>0)
             {
-                withdraw(arguments[2],atoi(arguments[3]));
+                withdraw(arguments[2],atoi(arguments[3]),atoi(arguments[4]));
             }
             else
             {
@@ -103,11 +103,11 @@ int main(int arg_count,char* arguments[])
 
     if(strcmp(arguments[1],"transfer")==0)
     {
-        if(arg_count==5)
+        if(arg_count==6)
         {
             if(atoi(arguments[4])>0)
             {
-                transfer(arguments[2],arguments[3],atoi(arguments[4]));
+                transfer(arguments[2],arguments[3],atoi(arguments[4]),atoi(arguments[5]));
             }
             else
             {
@@ -122,7 +122,15 @@ int main(int arg_count,char* arguments[])
 
     if(strcmp(arguments[1],"balance")==0)
     {
-        balance(arguments[2]);
+        if(arg_count==4)
+        {
+            balance(arguments[2],atoi(arguments[3]));
+        }
+        else
+        {
+            printf("invalid arguments");
+        }
+
     }
 
     return 0;
@@ -175,9 +183,10 @@ void create_account(char first_name[],char last_name[],char account_no[],char ma
     }
 }
 
-void close_account(char account_no[])
+void close_account(char account_no[],int pin)
 {
     int account_found=FALSE;
+    int pin_correct=FALSE;
     FILE *accounts,*temp;
 
     accounts=fopen("accounts.txt","r");
@@ -187,11 +196,15 @@ void close_account(char account_no[])
         if(strcmp(user.account_no,account_no)==0)
         {
             account_found=TRUE;
+            if(user.pin==pin)
+            {
+                pin_correct=TRUE;
+            }
         }
     }
     fclose(accounts);
 
-    if(account_found==TRUE)
+    if(account_found==TRUE && pin_correct==TRUE)
     {
         accounts=fopen("accounts.txt","r");
         temp=fopen("temp.txt","w");
@@ -213,7 +226,14 @@ void close_account(char account_no[])
     }
     else
     {
-        printf("account not found");
+        if(account_found==FALSE)
+        {
+            printf("account not found");
+        }
+        else
+        {
+            printf("incorrect pin");
+        }
     }
 }
 
@@ -263,10 +283,11 @@ void deposit(char account_no[],int amount)
     }
 }
 
-void withdraw(char account_no[],int amount)
+void withdraw(char account_no[],int amount,int pin)
 {
     int account_found=FALSE;
     int sufficient=FALSE;
+    int pin_correct=FALSE;
     FILE *accounts,*temp;
 
     accounts=fopen("accounts.txt","r");
@@ -275,6 +296,10 @@ void withdraw(char account_no[],int amount)
         fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
         if(strcmp(user.account_no,account_no)==0)
         {
+            if(user.pin==pin)
+            {
+                pin_correct=TRUE;
+            }
             account_found=TRUE;
             if(user.balance>=amount)
             {
@@ -286,7 +311,7 @@ void withdraw(char account_no[],int amount)
 
     if(account_found==TRUE)
     {
-        if(sufficient==TRUE)
+        if(sufficient==TRUE && pin_correct==TRUE)
         {
             accounts=fopen("accounts.txt","r");
             temp=fopen("temp.txt","w");
@@ -312,7 +337,17 @@ void withdraw(char account_no[],int amount)
         }
         else
         {
-            printf("insufficient amount");
+            if(pin_correct==FALSE)
+            {
+                printf("incorrect pin");
+            }
+            else
+            {
+                if(sufficient==FALSE)
+                {
+                    printf("insufficient amount");
+                }
+            }
         }
     }
     else
@@ -321,11 +356,12 @@ void withdraw(char account_no[],int amount)
     }
 }
 
-void transfer(char sender_account_no[],char receiver_account_no[],int amount)
+void transfer(char sender_account_no[],char receiver_account_no[],int amount,int pin)
 {
     int sender_account_found=FALSE;
     int receiver_account_found=FALSE;
     int sufficient=FALSE;
+    int pin_correct=FALSE;
     FILE *accounts,*temp;
 
     accounts=fopen("accounts.txt","r");
@@ -336,6 +372,10 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount)
         if(strcmp(user.account_no,sender_account_no)==0)
         {
             sender_account_found=TRUE;
+            if(user.pin==pin)
+            {
+                pin_correct=TRUE;
+            }
             if(user.balance>=amount)
             {
                 sufficient=TRUE;
@@ -351,7 +391,7 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount)
 
     if(sender_account_found==TRUE && receiver_account_found==TRUE)
     {
-        if(sufficient==TRUE)
+        if(sufficient==TRUE && pin_correct==TRUE)
         {
             accounts=fopen("accounts.txt","r");
             temp=fopen("temp.txt","w");
@@ -385,7 +425,14 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount)
         }
         else
         {
-            printf("insufficient amount");
+            if(pin_correct==FALSE)
+            {
+                printf("incorrect pin");
+            }
+            else
+            {
+                printf("insufficient amount");
+            }
         }
     }
     else
@@ -409,9 +456,10 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount)
     }
 }
 
-void balance(char accoun_no[])
+void balance(char accoun_no[],int pin)
 {
     int accoun_found=FALSE;
+    int pin_correct=FALSE;
     FILE *accounts;
 
     accounts=fopen("accounts.txt","r");
@@ -421,7 +469,14 @@ void balance(char accoun_no[])
         if(strcmp(user.account_no,accoun_no)==0)
         {
             accoun_found=TRUE;
-            printf("%d",user.balance);
+            if(user.pin==pin)
+            {
+                printf("%d",user.balance);
+            }
+            else
+            {
+                printf("incorrect pin");
+            }
         }
     }
     fclose(accounts);
