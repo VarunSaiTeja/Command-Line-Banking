@@ -29,15 +29,15 @@ To create new account
 ___
 To close account
 
-(application name) close_account (account_no)
+(application name) close_account (account_no) (pin)
 
-"Command Line Banking" close_account 9010075670
+"Command Line Banking" close_account 9010075670 1000
 ___
 To check account balance
 
-(application name) balance (account_no)
+(application name) balance (account_no) (pin)
 
-"Command Line Banking" balance 9010075670
+"Command Line Banking" balance 9010075670 1000
 ___
 To deposit amount
 
@@ -47,13 +47,13 @@ To deposit amount
 ___
 To withdraw amount
 
-(application name) withdraw (account_no) (amount)
+(application name) withdraw (account_no) (amount) (pin)
 
-"Command Line Banking" withdraw 9010075670 5000
+"Command Line Banking" withdraw 9010075670 5000 1000
 ___
 To transfer amount
 
-(application name) transfer (sender_account_no) (receiver account_no) (amount)
+(application name) transfer (sender_account_no) (receiver account_no) (amount) (pin)
 
-"Command Line Banking" transfer 9010075670 9999889999 5000
+"Command Line Banking" transfer 9010075670 9999889999 5000 1000
 ___
