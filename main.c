@@ -389,46 +389,6 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount,int
     }
     fclose(accounts);
 
-    if(sender_account_found==FALSE)
-    {
-        accounts=fopen("accounts.txt","r");
-        while(!feof(accounts))
-        {
-            fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
-
-            if(strcmp(user.mail,sender_account_no)==0)
-            {
-                strcpy(sender_account_no,user.account_no);
-                sender_account_found=TRUE;
-                if(user.pin==pin)
-                {
-                    pin_correct=TRUE;
-                }
-                if(user.balance>=amount)
-                {
-                    sufficient=TRUE;
-                }
-            }
-        }
-        fclose(accounts);
-    }
-
-    if(receiver_account_found==FALSE)
-    {
-        accounts=fopen("accounts.txt","r");
-        while(!feof(accounts))
-        {
-            fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
-
-            if(strcmp(user.mail,receiver_account_no)==0)
-            {
-                strcpy(receiver_account_no,user.account_no);
-                receiver_account_found=TRUE;
-            }
-        }
-        fclose(accounts);
-    }
-
     if(sender_account_found==TRUE && receiver_account_found==TRUE)
     {
         if(sufficient==TRUE && pin_correct==TRUE)
