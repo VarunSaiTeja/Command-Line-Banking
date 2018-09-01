@@ -11,6 +11,7 @@ void deposit(char account_no[],int amount);
 void withdraw(char account_no[],int amount,int pin);
 void transfer(char sender_account_no[],char receiver_account_no[],int amount,int pin);
 void balance(char account_no[],int pin);
+void log_at(char account_no[],int pin);
 
 struct account
 {
@@ -131,6 +132,18 @@ int main(int arg_count,char* arguments[])
             printf("invalid arguments");
         }
 
+    }
+
+    if(strcmp(arguments[1],"log_at")==0)
+    {
+        if(arg_count==4)
+        {
+            log_at(arguments[2],atoi(arguments[3]));
+        }
+        else
+        {
+            printf("invalid arguments");
+        }
     }
 
     return 0;
@@ -500,6 +513,45 @@ void balance(char account_no[],int pin)
     }
 
     if(account_found==FALSE)
+    {
+        printf("account not found");
+    }
+}
+
+void log_at(char account_no[],int pin)
+{
+    int pin_correct=FALSE;
+    int account_found=FALSE;
+    FILE *accounts;
+
+    accounts=fopen("accounts.txt","r");
+    while(!feof(accounts))
+    {
+        fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+        if(strcmp(user.account_no,account_no)==0 || strcmp(user.mail,account_no)==0)
+        {
+            strcpy(account_no,user.account_no);
+            account_found=TRUE;
+            if(user.pin==pin)
+            {
+                pin_correct=TRUE;
+            }
+        }
+    }
+    fclose(accounts);
+
+    if(account_found==TRUE)
+    {
+        if(pin_correct==TRUE)
+        {
+            printf("success");
+        }
+        else
+        {
+            printf("failed");
+        }
+    }
+    else
     {
         printf("account not found");
     }
