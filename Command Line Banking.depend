@@ -1,5 +1,9 @@
 # depslib dependency file v1.0
+<<<<<<< HEAD
 1535728576 source:d:\coding\c\command line banking\main.c
+=======
+1535639328 source:d:\coding\c\command line banking\main.c
+>>>>>>> parent of 09339f2... Mail login Balance
 	<stdio.h>
 	<stdlib.h>
 	<windows.h>

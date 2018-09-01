@@ -580,28 +580,6 @@ void balance(char accoun_no[],int pin)
 
     if(accoun_found==FALSE)
     {
-        accounts=fopen("accounts.txt","r");
-        while(!feof(accounts))
-        {
-            fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
-            if(strcmp(user.mail,accoun_no)==0)
-            {
-                accoun_found=TRUE;
-                if(user.pin==pin)
-                {
-                    printf("%d",user.balance);
-                }
-                else
-                {
-                    printf("incorrect pin");
-                }
-            }
-        }
-        fclose(accounts);
-    }
-
-    if(accoun_found==FALSE)
-    {
         printf("account not found");
     }
 }
