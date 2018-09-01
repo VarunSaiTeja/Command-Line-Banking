@@ -193,8 +193,9 @@ void close_account(char account_no[],int pin)
     while(!feof(accounts))
     {
         fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
-        if(strcmp(user.account_no,account_no)==0)
+        if(strcmp(user.account_no,account_no)==0 || strcmp(user.mail,account_no)==0)
         {
+            strcpy(account_no,user.account_no);
             account_found=TRUE;
             if(user.pin==pin)
             {
@@ -246,8 +247,9 @@ void deposit(char account_no[],int amount)
     while(!feof(accounts))
     {
         fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
-        if(strcmp(user.account_no,account_no)==0)
+        if(strcmp(user.account_no,account_no)==0 || strcmp(user.mail,account_no)==0)
         {
+            strcpy(account_no,user.account_no);
             account_found=TRUE;
         }
     }
@@ -294,8 +296,9 @@ void withdraw(char account_no[],int amount,int pin)
     while(!feof(accounts))
     {
         fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
-        if(strcmp(user.account_no,account_no)==0)
+        if(strcmp(user.account_no,account_no)==0 || strcmp(user.mail,account_no)==0)
         {
+            strcpy(account_no,user.account_no);
             if(user.pin==pin)
             {
                 pin_correct=TRUE;
@@ -369,8 +372,9 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount,int
     {
         fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
 
-        if(strcmp(user.account_no,sender_account_no)==0)
+        if(strcmp(user.account_no,sender_account_no)==0 || strcmp(user.mail,sender_account_no)==0)
         {
+            strcpy(sender_account_no,user.account_no);
             sender_account_found=TRUE;
             if(user.pin==pin)
             {
@@ -382,8 +386,9 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount,int
             }
         }
 
-        if(strcmp(user.account_no,receiver_account_no)==0)
+        if(strcmp(user.account_no,receiver_account_no)==0 || strcmp(user.mail,receiver_account_no)==0)
         {
+            strcpy(receiver_account_no,user.account_no);
             receiver_account_found=TRUE;
         }
     }
@@ -467,8 +472,9 @@ void balance(char account_no[],int pin)
     while(!feof(accounts))
     {
         fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
-        if(strcmp(user.account_no,account_no)==0)
+        if(strcmp(user.account_no,account_no)==0 || strcmp(user.mail,account_no)==0)
         {
+            strcpy(account_no,user.account_no);
             account_found=TRUE;
             if(user.pin==pin)
             {
