@@ -167,6 +167,11 @@ void create_account(char first_name[],char last_name[],char account_no[],char ma
         {
             account_exist=TRUE;
         }
+
+        if(strcmp(user.mail,mail)==0)
+        {
+            account_exist=TRUE;
+        }
     }
     fclose(accounts);
 
