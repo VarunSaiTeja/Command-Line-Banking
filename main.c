@@ -456,22 +456,24 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount,int
     }
 }
 
-void balance(char accoun_no[],int pin)
+void balance(char account_no[],int pin)
 {
-    int accoun_found=FALSE;
+    int account_found=FALSE;
     int pin_correct=FALSE;
+    int amount;
     FILE *accounts;
 
     accounts=fopen("accounts.txt","r");
     while(!feof(accounts))
     {
         fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
-        if(strcmp(user.account_no,accoun_no)==0)
+        if(strcmp(user.account_no,account_no)==0)
         {
-            accoun_found=TRUE;
+            account_found=TRUE;
             if(user.pin==pin)
             {
-                printf("%d",user.balance);
+                pin_correct=TRUE;
+                amount=user.balance;
             }
             else
             {
@@ -481,7 +483,12 @@ void balance(char accoun_no[],int pin)
     }
     fclose(accounts);
 
-    if(accoun_found==FALSE)
+    if(pin_correct==TRUE)
+    {
+        printf("%d",amount);
+    }
+
+    if(account_found==FALSE)
     {
         printf("account not found");
     }
