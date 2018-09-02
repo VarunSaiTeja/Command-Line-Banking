@@ -5,13 +5,15 @@
 
 void create_db();
 void delete_db();
-void create_account(char first_name[],char last_name[],char account_no[],char mail[],int balance,int pin,char city[]);
-void close_account(char account_no[],int pin);
+void create_account(char first_name[],char last_name[],char account_no[],char mail[],int balance,char password[],char city[]);
+void close_account(char account_no[],char password[]);
 void deposit(char account_no[],int amount);
-void withdraw(char account_no[],int amount,int pin);
-void transfer(char sender_account_no[],char receiver_account_no[],int amount,int pin);
-void balance(char account_no[],int pin);
-void log_at(char account_no[],int pin);
+void withdraw(char account_no[],int amount,char password[]);
+void transfer(char sender_account_no[],char receiver_account_no[],int amount,char password[]);
+void balance(char account_no[],char password[]);
+void log_at(char account_no[],char password[]);
+void mobile_exist(char account_no[]);
+void mail_exist(char mail[]);
 
 struct account
 {
@@ -20,7 +22,7 @@ struct account
     char account_no[11];
     char mail[40];
     int balance;
-    int pin;
+    char password[15];
     char city[15];
 };
 
@@ -44,7 +46,7 @@ int main(int arg_count,char* arguments[])
         //total arguments=9
         if(arg_count==9)
         {
-            create_account(arguments[2],arguments[3],arguments[4],arguments[5],atoi(arguments[6]),atoi(arguments[7]),arguments[8]);
+            create_account(arguments[2],arguments[3],arguments[4],arguments[5],atoi(arguments[6]),arguments[7],arguments[8]);
         }
         else
         {
@@ -56,7 +58,7 @@ int main(int arg_count,char* arguments[])
     {
         if(arg_count==4)
         {
-            close_account(arguments[2],atoi(arguments[3]));
+            close_account(arguments[2],arguments[3]);
         }
         else
         {
@@ -89,7 +91,7 @@ int main(int arg_count,char* arguments[])
         {
             if(atoi(arguments[3])>0)
             {
-                withdraw(arguments[2],atoi(arguments[3]),atoi(arguments[4]));
+                withdraw(arguments[2],atoi(arguments[3]),arguments[4]);
             }
             else
             {
@@ -108,7 +110,7 @@ int main(int arg_count,char* arguments[])
         {
             if(atoi(arguments[4])>0)
             {
-                transfer(arguments[2],arguments[3],atoi(arguments[4]),atoi(arguments[5]));
+                transfer(arguments[2],arguments[3],atoi(arguments[4]),arguments[5]);
             }
             else
             {
@@ -125,7 +127,7 @@ int main(int arg_count,char* arguments[])
     {
         if(arg_count==4)
         {
-            balance(arguments[2],atoi(arguments[3]));
+            balance(arguments[2],arguments[3]);
         }
         else
         {
@@ -138,7 +140,31 @@ int main(int arg_count,char* arguments[])
     {
         if(arg_count==4)
         {
-            log_at(arguments[2],atoi(arguments[3]));
+            log_at(arguments[2],arguments[3]);
+        }
+        else
+        {
+            printf("invalid arguments");
+        }
+    }
+
+    if(strcmp(arguments[1],"mobile_exist")==0)
+    {
+        if(arg_count==3)
+        {
+            mobile_exist(arguments[2]);
+        }
+        else
+        {
+            printf("invalid arguments");
+        }
+    }
+
+    if(strcmp(arguments[1],"mail_exist")==0)
+    {
+        if(arg_count==3)
+        {
+            mail_exist(arguments[2]);
         }
         else
         {
@@ -166,7 +192,7 @@ void delete_db()
     printf("database deleted");
 }
 
-void create_account(char first_name[],char last_name[],char account_no[],char mail[],int balance,int pin,char city[])
+void create_account(char first_name[],char last_name[],char account_no[],char mail[],int balance,char password[],char city[])
 {
     int account_exist=FALSE;
 
@@ -175,7 +201,7 @@ void create_account(char first_name[],char last_name[],char account_no[],char ma
     accounts=fopen("accounts.txt","r");
     while(!feof(accounts))
     {
-        fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+        fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
         if(strcmp(user.account_no,account_no)==0)
         {
             account_exist=TRUE;
@@ -191,7 +217,7 @@ void create_account(char first_name[],char last_name[],char account_no[],char ma
     if(account_exist==FALSE)
     {
         accounts=fopen("accounts.txt","a");
-        fprintf(accounts,"%s %s %s %s %d %d %s\n",first_name,last_name,account_no,mail,balance,pin,city);
+        fprintf(accounts,"%s %s %s %s %d %s %s\n",first_name,last_name,account_no,mail,balance,password,city);
         fclose(accounts);
         printf("account created");
     }
@@ -201,39 +227,39 @@ void create_account(char first_name[],char last_name[],char account_no[],char ma
     }
 }
 
-void close_account(char account_no[],int pin)
+void close_account(char account_no[],char password[])
 {
     int account_found=FALSE;
-    int pin_correct=FALSE;
+    int password_correct=FALSE;
     FILE *accounts,*temp;
 
     accounts=fopen("accounts.txt","r");
     while(!feof(accounts))
     {
-        fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+        fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
         if(strcmp(user.account_no,account_no)==0 || strcmp(user.mail,account_no)==0)
         {
             strcpy(account_no,user.account_no);
             account_found=TRUE;
-            if(user.pin==pin)
+            if(strcmp(user.password,password)==0)
             {
-                pin_correct=TRUE;
+                password_correct=TRUE;
             }
         }
     }
     fclose(accounts);
 
-    if(account_found==TRUE && pin_correct==TRUE)
+    if(account_found==TRUE && password_correct==TRUE)
     {
         accounts=fopen("accounts.txt","r");
         temp=fopen("temp.txt","w");
 
         while(!feof(accounts))
         {
-            fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+            fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
             if(strcmp(user.account_no,account_no)!=0)
             {
-                fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.pin,user.city);
+                fprintf(temp,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.password,user.city);
             }
         }
 
@@ -251,7 +277,7 @@ void close_account(char account_no[],int pin)
         }
         else
         {
-            printf("incorrect pin");
+            printf("wrong password");
         }
     }
 }
@@ -264,7 +290,7 @@ void deposit(char account_no[],int amount)
     accounts=fopen("accounts.txt","r");
     while(!feof(accounts))
     {
-        fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+        fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
         if(strcmp(user.account_no,account_no)==0 || strcmp(user.mail,account_no)==0)
         {
             strcpy(account_no,user.account_no);
@@ -280,14 +306,14 @@ void deposit(char account_no[],int amount)
 
         while(!feof(accounts))
         {
-            fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+            fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
             if(strcmp(user.account_no,account_no)!=0)
             {
-                fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.pin,user.city);
+                fprintf(temp,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.password,user.city);
             }
             else
             {
-                fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance+amount),user.pin,user.city);
+                fprintf(temp,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance+amount),user.password,user.city);
             }
         }
 
@@ -303,23 +329,23 @@ void deposit(char account_no[],int amount)
     }
 }
 
-void withdraw(char account_no[],int amount,int pin)
+void withdraw(char account_no[],int amount,char password[])
 {
     int account_found=FALSE;
     int sufficient=FALSE;
-    int pin_correct=FALSE;
+    int password_correct=FALSE;
     FILE *accounts,*temp;
 
     accounts=fopen("accounts.txt","r");
     while(!feof(accounts))
     {
-        fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+        fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
         if(strcmp(user.account_no,account_no)==0 || strcmp(user.mail,account_no)==0)
         {
             strcpy(account_no,user.account_no);
-            if(user.pin==pin)
+            if(strcmp(user.password,password)==0)
             {
-                pin_correct=TRUE;
+                password_correct=TRUE;
             }
             account_found=TRUE;
             if(user.balance>=amount)
@@ -332,21 +358,21 @@ void withdraw(char account_no[],int amount,int pin)
 
     if(account_found==TRUE)
     {
-        if(sufficient==TRUE && pin_correct==TRUE)
+        if(sufficient==TRUE && password_correct==TRUE)
         {
             accounts=fopen("accounts.txt","r");
             temp=fopen("temp.txt","w");
 
             while(!feof(accounts))
             {
-                fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+                fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
                 if(strcmp(user.account_no,account_no)!=0)
                 {
-                    fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.pin,user.city);
+                    fprintf(temp,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.password,user.city);
                 }
                 else
                 {
-                    fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance-amount),user.pin,user.city);
+                    fprintf(temp,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance-amount),user.password,user.city);
                 }
             }
 
@@ -358,9 +384,9 @@ void withdraw(char account_no[],int amount,int pin)
         }
         else
         {
-            if(pin_correct==FALSE)
+            if(password_correct==FALSE)
             {
-                printf("incorrect pin");
+                printf("wrong password");
             }
             else
             {
@@ -377,26 +403,26 @@ void withdraw(char account_no[],int amount,int pin)
     }
 }
 
-void transfer(char sender_account_no[],char receiver_account_no[],int amount,int pin)
+void transfer(char sender_account_no[],char receiver_account_no[],int amount,char password[])
 {
     int sender_account_found=FALSE;
     int receiver_account_found=FALSE;
     int sufficient=FALSE;
-    int pin_correct=FALSE;
+    int password_correct=FALSE;
     FILE *accounts,*temp;
 
     accounts=fopen("accounts.txt","r");
     while(!feof(accounts))
     {
-        fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+        fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
 
         if(strcmp(user.account_no,sender_account_no)==0 || strcmp(user.mail,sender_account_no)==0)
         {
             strcpy(sender_account_no,user.account_no);
             sender_account_found=TRUE;
-            if(user.pin==pin)
+            if(strcmp(user.password,password)==0)
             {
-                pin_correct=TRUE;
+                password_correct=TRUE;
             }
             if(user.balance>=amount)
             {
@@ -414,28 +440,28 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount,int
 
     if(sender_account_found==TRUE && receiver_account_found==TRUE)
     {
-        if(sufficient==TRUE && pin_correct==TRUE)
+        if(sufficient==TRUE && password_correct==TRUE)
         {
             accounts=fopen("accounts.txt","r");
             temp=fopen("temp.txt","w");
 
             while(!feof(accounts))
             {
-                fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+                fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
                 if(strcmp(user.account_no,sender_account_no)!=0 && strcmp(user.account_no,receiver_account_no)!=0)
                 {
-                    fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.pin,user.city);
+                    fprintf(temp,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,user.balance,user.password,user.city);
                 }
                 else
                 {
                     if(strcmp(user.account_no,sender_account_no)==0)
                     {
-                        fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance-amount),user.pin,user.city);
+                        fprintf(temp,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance-amount),user.password,user.city);
                     }
 
                     if(strcmp(user.account_no,receiver_account_no)==0)
                     {
-                        fprintf(temp,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance+amount),user.pin,user.city);
+                        fprintf(temp,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance+amount),user.password,user.city);
                     }
                 }
             }
@@ -448,9 +474,9 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount,int
         }
         else
         {
-            if(pin_correct==FALSE)
+            if(password_correct==FALSE)
             {
-                printf("incorrect pin");
+                printf("wrong password");
             }
             else
             {
@@ -479,35 +505,35 @@ void transfer(char sender_account_no[],char receiver_account_no[],int amount,int
     }
 }
 
-void balance(char account_no[],int pin)
+void balance(char account_no[],char password[])
 {
     int account_found=FALSE;
-    int pin_correct=FALSE;
+    int password_correct=FALSE;
     int amount;
     FILE *accounts;
 
     accounts=fopen("accounts.txt","r");
     while(!feof(accounts))
     {
-        fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+        fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
         if(strcmp(user.account_no,account_no)==0 || strcmp(user.mail,account_no)==0)
         {
             strcpy(account_no,user.account_no);
             account_found=TRUE;
-            if(user.pin==pin)
+            if(strcmp(user.password,password)==0)
             {
-                pin_correct=TRUE;
+                password_correct=TRUE;
                 amount=user.balance;
             }
             else
             {
-                printf("incorrect pin");
+                printf("wrong password");
             }
         }
     }
     fclose(accounts);
 
-    if(pin_correct==TRUE)
+    if(password_correct==TRUE)
     {
         printf("%d",amount);
     }
@@ -518,23 +544,23 @@ void balance(char account_no[],int pin)
     }
 }
 
-void log_at(char account_no[],int pin)
+void log_at(char account_no[],char password[])
 {
-    int pin_correct=FALSE;
+    int password_correct=FALSE;
     int account_found=FALSE;
     FILE *accounts;
 
     accounts=fopen("accounts.txt","r");
     while(!feof(accounts))
     {
-        fscanf(accounts,"%s %s %s %s %d %d %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,&user.pin,user.city);
+        fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
         if(strcmp(user.account_no,account_no)==0 || strcmp(user.mail,account_no)==0)
         {
             strcpy(account_no,user.account_no);
             account_found=TRUE;
-            if(user.pin==pin)
+            if(strcmp(user.password,password)==0)
             {
-                pin_correct=TRUE;
+                password_correct=TRUE;
             }
         }
     }
@@ -542,17 +568,69 @@ void log_at(char account_no[],int pin)
 
     if(account_found==TRUE)
     {
-        if(pin_correct==TRUE)
+        if(password_correct==TRUE)
         {
             printf("success");
         }
         else
         {
-            printf("failed");
+            printf("wrong password");
         }
     }
     else
     {
         printf("account not found");
+    }
+}
+
+void mobile_exist(char account_no[])
+{
+    int account_exist=FALSE;
+    FILE *accounts;
+
+    accounts=fopen("accounts.txt","r");
+    while(!feof(accounts))
+    {
+        fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
+        if(strcmp(user.account_no,account_no)==0)
+        {
+            account_exist=TRUE;
+        }
+    }
+    fclose(accounts);
+
+    if(account_exist==FALSE)
+    {
+        printf("not exist");
+    }
+    else
+    {
+        printf("already exist");
+    }
+}
+
+void mail_exist(char mail[])
+{
+    int account_exist=FALSE;
+    FILE *accounts;
+
+    accounts=fopen("accounts.txt","r");
+    while(!feof(accounts))
+    {
+        fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
+        if(strcmp(user.mail,mail)==0)
+        {
+            account_exist=TRUE;
+        }
+    }
+    fclose(accounts);
+
+    if(account_exist==FALSE)
+    {
+        printf("not exist");
+    }
+    else
+    {
+        printf("already exist");
     }
 }
