@@ -14,6 +14,7 @@ void balance(char account_no[],char password[]);
 void log_at(char account_no[],char password[]);
 void mobile_exist(char account_no[]);
 void mail_exist(char mail[]);
+void pref_otp_read(char account_no[],char preference[]);
 
 struct account
 {
@@ -25,6 +26,16 @@ struct account
     char password[15];
     char city[15];
 };
+
+struct pref_otp
+{
+    char account_no[11];
+    char Omail[40];
+    int Ologin;
+    int Owithdraw;
+    int Otransfer;
+}otp;
+
 
 struct account user;
 
@@ -172,6 +183,17 @@ int main(int arg_count,char* arguments[])
         }
     }
 
+    if(strcmp(arguments[1],"read_otp_pref")==0)
+    {
+        if(arg_count==4)
+        {
+            pref_otp_read(arguments[2],arguments[3]);
+        }
+        else
+        {
+            printf("invalid arguments");
+        }
+    }
     return 0;
 }
 
@@ -182,12 +204,16 @@ void create_db()
     new_file=fopen("accounts.txt","w");
     fclose(new_file);
 
+    new_file=fopen("otp preferences.txt","w");
+    fclose(new_file);
+
     printf("database created");
 }
 
 void delete_db()
 {
     remove("accounts.txt");
+    remove("otp preferences.txt");
 
     printf("database deleted");
 }
@@ -632,5 +658,62 @@ void mail_exist(char mail[])
     else
     {
         printf("already exist");
+    }
+}
+
+void pref_otp_read(char account_no[],char preference[])
+{
+    int account_found=FALSE;
+    FILE *fotp;
+
+    fotp=fopen("otp preferences.txt","r");
+    while(!feof(fotp))
+    {
+        fscanf(fotp,"%s %s %d %d %d\n",otp.account_no,otp.Omail,&otp.Ologin,&otp.Owithdraw,&otp.Otransfer);
+        if(strcmp(otp.account_no,account_no)==0 || strcmp(otp.Omail,account_no)==0)
+        {
+            account_found=TRUE;
+            if(strcmp(preference,"login")==0)
+            {
+                if(otp.Ologin==TRUE)
+                {
+                    printf("true");
+                }
+                else
+                {
+                    printf("false");
+                }
+            }
+
+            if(strcmp(preference,"withdraw")==0)
+            {
+                if(otp.Owithdraw==TRUE)
+                {
+                    printf("true");
+                }
+                else
+                {
+                    printf("false");
+                }
+            }
+
+            if(strcmp(preference,"transfer")==0)
+            {
+                if(otp.Otransfer==TRUE)
+                {
+                    printf("true");
+                }
+                else
+                {
+                    printf("false");
+                }
+            }
+        }
+    }
+    fclose(fotp);
+
+    if(account_found==FALSE)
+    {
+        printf("account not found");
     }
 }
