@@ -24,6 +24,10 @@ struct account
     int balance;
     char password[15];
     char city[15];
+    char cr_dr[5];
+    char reason[15];
+
+    int txn_date,txn_month,txn_year,txn_hour,txn_minute;
 };
 
 struct account user;
