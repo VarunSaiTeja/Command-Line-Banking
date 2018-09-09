@@ -198,9 +198,12 @@ void delete_db()
 
 void create_account(char first_name[],char last_name[],char account_no[],char mail[],int balance,char password[],char city[])
 {
+    SYSTEMTIME time;
+    GetLocalTime(&time);
+
     int account_exist=FALSE;
 
-    FILE *accounts;
+    FILE *accounts,*transactions;
 
     accounts=fopen("accounts.txt","r");
     while(!feof(accounts))
@@ -223,6 +226,11 @@ void create_account(char first_name[],char last_name[],char account_no[],char ma
         accounts=fopen("accounts.txt","a");
         fprintf(accounts,"%s %s %s %s %d %s %s\n",first_name,last_name,account_no,mail,balance,password,city);
         fclose(accounts);
+
+        transactions=fopen("transactions.txt","a");
+        fprintf(transactions,"%s + %d %d %d %d %d %d AccountOpening",user.account_no,balance,time.wHour,time.wMinute,time.wDay,time.wMonth,time.wYear);
+        fclose(transactions);
+
         printf("account created");
     }
     else
