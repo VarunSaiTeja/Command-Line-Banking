@@ -343,10 +343,13 @@ void deposit(char account_no[],int amount)
 
 void withdraw(char account_no[],int amount,char password[])
 {
+    SYSTEMTIME time;
+    GetLocalTime(&time);
+
     int account_found=FALSE;
     int sufficient=FALSE;
     int password_correct=FALSE;
-    FILE *accounts,*temp;
+    FILE *accounts,*temp,*transactions;
 
     accounts=fopen("accounts.txt","r");
     while(!feof(accounts))
@@ -374,6 +377,7 @@ void withdraw(char account_no[],int amount,char password[])
         {
             accounts=fopen("accounts.txt","r");
             temp=fopen("temp.txt","w");
+            transactions=fopen("transactions.txt","a");
 
             while(!feof(accounts))
             {
@@ -385,11 +389,13 @@ void withdraw(char account_no[],int amount,char password[])
                 else
                 {
                     fprintf(temp,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance-amount),user.password,user.city);
+                    fprintf(transactions,"%s + %d Withdraw %d %d %d %d %d\n",account_no,amount,time.wHour,time.wMinute,time.wDay,time.wMonth,time.wYear);
                 }
             }
 
             fclose(accounts);
             fclose(temp);
+            fclose(transactions);
             remove("accounts.txt");
             rename("temp.txt","accounts.txt");
             printf("amount withdrawn");
