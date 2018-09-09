@@ -296,8 +296,11 @@ void close_account(char account_no[],char password[])
 
 void deposit(char account_no[],int amount)
 {
+    SYSTEMTIME time;
+    GetLocalTime(&time);
+
     int account_found=FALSE;
-    FILE *accounts,*temp;
+    FILE *accounts,*temp,*transactions;
 
     accounts=fopen("accounts.txt","r");
     while(!feof(accounts))
@@ -315,6 +318,7 @@ void deposit(char account_no[],int amount)
     {
         accounts=fopen("accounts.txt","r");
         temp=fopen("temp.txt","w");
+        transactions=fopen("transactions.txt","a");
 
         while(!feof(accounts))
         {
@@ -326,11 +330,13 @@ void deposit(char account_no[],int amount)
             else
             {
                 fprintf(temp,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance+amount),user.password,user.city);
+                fprintf(transactions,"%s + %d Deposit %d %d %d %d %d\n",account_no,amount,time.wHour,time.wMinute,time.wDay,time.wMonth,time.wYear);
             }
         }
 
         fclose(accounts);
         fclose(temp);
+        fclose(transactions);
         remove("accounts.txt");
         rename("temp.txt","accounts.txt");
         printf("amount deposited");
