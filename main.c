@@ -395,7 +395,7 @@ void withdraw(char account_no[],int amount,char password[])
                 else
                 {
                     fprintf(temp,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,(user.balance-amount),user.password,user.city);
-                    fprintf(transactions,"%s + %d Withdraw %d %d %d %d %d\n",account_no,amount,time.wHour,time.wMinute,time.wDay,time.wMonth,time.wYear);
+                    fprintf(transactions,"%s - %d Withdraw %d %d %d %d %d\n",account_no,amount,time.wHour,time.wMinute,time.wDay,time.wMonth,time.wYear);
                 }
             }
 
