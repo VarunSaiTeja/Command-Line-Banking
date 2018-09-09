@@ -243,7 +243,7 @@ void close_account(char account_no[],char password[])
 {
     int account_found=FALSE;
     int password_correct=FALSE;
-    FILE *accounts,*temp;
+    FILE *accounts,*temp,*transactions;
 
     accounts=fopen("accounts.txt","r");
     while(!feof(accounts))
@@ -279,6 +279,25 @@ void close_account(char account_no[],char password[])
         fclose(temp);
         remove("accounts.txt");
         rename("temp.txt","accounts.txt");
+
+
+        transactions=fopen("transactions.txt","r");
+        temp=fopen("temp.txt","w");
+
+        while(!feof(transactions))
+        {
+            fscanf(transactions,"%s %s %d %s %d %d %d %d %d\n",user.account_no,user.cr_dr,&user.balance,user.reason,&user.txn_hour,&user.txn_minute,&user.txn_date,&user.txn_month,&user.txn_year);
+            if(strcmp(user.account_no,account_no)!=0)
+            {
+                fprintf(temp,"%s %s %d %s %d %d %d %d %d\n",user.account_no,user.cr_dr,user.balance,user.reason,user.txn_hour,user.txn_minute,user.txn_date,user.txn_month,user.txn_year);
+            }
+        }
+
+        fclose(transactions);
+        fclose(temp);
+        remove("transactions.txt");
+        rename("temp.txt","transactions.txt");
+
         printf("account closed");
     }
     else
