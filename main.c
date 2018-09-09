@@ -228,7 +228,7 @@ void create_account(char first_name[],char last_name[],char account_no[],char ma
         fclose(accounts);
 
         transactions=fopen("transactions.txt","a");
-        fprintf(transactions,"%s + %d %d %d %d %d %d AccountOpening",user.account_no,balance,time.wHour,time.wMinute,time.wDay,time.wMonth,time.wYear);
+        fprintf(transactions,"%s + %d AccountOpening %d %d %d %d %d\n",user.account_no,balance,time.wHour,time.wMinute,time.wDay,time.wMonth,time.wYear);
         fclose(transactions);
 
         printf("account created");
