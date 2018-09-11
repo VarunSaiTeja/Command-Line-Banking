@@ -14,6 +14,7 @@ void balance(char account_no[],char password[]);
 void log_at(char account_no[],char password[]);
 void mobile_exist(char account_no[]);
 void mail_exist(char mail[]);
+void transactions(char account_no[],char passsword[]);
 
 struct account
 {
@@ -169,6 +170,18 @@ int main(int arg_count,char* arguments[])
         if(arg_count==3)
         {
             mail_exist(arguments[2]);
+        }
+        else
+        {
+            printf("invalid arguments");
+        }
+    }
+
+    if(strcmp(arguments[1],"transactions")==0)
+    {
+        if(arg_count==4)
+        {
+            transactions(arguments[2],arguments[3]);
         }
         else
         {
@@ -683,4 +696,9 @@ void mail_exist(char mail[])
     {
         printf("already exist");
     }
+}
+
+void transactions(char account_no[],char passsword[])
+{
+
 }
