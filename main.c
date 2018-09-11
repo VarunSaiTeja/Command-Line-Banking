@@ -14,7 +14,7 @@ void balance(char account_no[],char password[]);
 void log_at(char account_no[],char password[]);
 void mobile_exist(char account_no[]);
 void mail_exist(char mail[]);
-void transactions(char account_no[],char password[]);
+void get_transactions(char account_no[],char password[]);
 
 struct account
 {
@@ -181,7 +181,7 @@ int main(int arg_count,char* arguments[])
     {
         if(arg_count==4)
         {
-            transactions(arguments[2],arguments[3]);
+            get_transactions(arguments[2],arguments[3]);
         }
         else
         {
@@ -698,11 +698,13 @@ void mail_exist(char mail[])
     }
 }
 
-void transactions(char account_no[],char password[])
+void get_transactions(char account_no[],char password[])
 {
     int password_correct=FALSE;
     int account_found=FALSE;
-    FILE *accounts;
+    FILE *accounts,*transactions;
+    char acc_name[15];
+    int acc_balance;
 
     accounts=fopen("accounts.txt","r");
     while(!feof(accounts))
@@ -711,6 +713,8 @@ void transactions(char account_no[],char password[])
         if(strcmp(user.account_no,account_no)==0 || strcmp(user.mail,account_no)==0)
         {
             strcpy(account_no,user.account_no);
+            strcpy(acc_name,user.first_name);
+            acc_balance=user.balance;
             account_found=TRUE;
             if(strcmp(user.password,password)==0)
             {
@@ -724,7 +728,31 @@ void transactions(char account_no[],char password[])
     {
         if(password_correct==TRUE)
         {
-            printf("success");
+            system("cls");
+    printf("_______________________________________________________________________");
+    printf("\n\n\t\t\t\tMini Statment\n");
+    printf("\n   Account ID : %s   Name : %s   Balance : %d\n",account_no,acc_name,acc_balance);
+    printf("_______________________________________________________________________");
+    printf("\n\n\tDate\t\tTime\t\tAmount\t\tReason\n");
+
+    transactions=fopen("transactions.txt","r");
+
+    while(!feof(transactions))
+    {
+       fscanf(transactions,"%s %s %d %s %d %d %d %d %d\n",user.account_no,user.cr_dr,&user.balance,user.reason,&user.txn_hour,&user.txn_minute,&user.txn_date,&user.txn_month,&user.txn_year);
+       if(strcmp(account_no,user.account_no)==0)
+       {
+           printf("\n\t %d/%d/%d \t%d:%d \t\t%s %d \t\t%s\n",user.txn_date,user.txn_month,user.txn_year,user.txn_hour,user.txn_minute,user.cr_dr,user.balance,user.reason);
+
+       }
+    }
+
+    fclose(transactions);
+
+    printf("_______________________________________________________________________");
+    printf("\n\n\t\t\tFinal Balance : %d\n\n",acc_balance);
+    printf("_______________________________________________________________________");
+    printf("\n");
         }
         else
         {
