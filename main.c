@@ -14,7 +14,7 @@ void balance(char account_no[],char password[]);
 void log_at(char account_no[],char password[]);
 void mobile_exist(char account_no[]);
 void mail_exist(char mail[]);
-void transactions(char account_no[],char passsword[]);
+void transactions(char account_no[],char password[]);
 
 struct account
 {
@@ -698,7 +698,41 @@ void mail_exist(char mail[])
     }
 }
 
-void transactions(char account_no[],char passsword[])
+void transactions(char account_no[],char password[])
 {
+    int password_correct=FALSE;
+    int account_found=FALSE;
+    FILE *accounts;
 
+    accounts=fopen("accounts.txt","r");
+    while(!feof(accounts))
+    {
+        fscanf(accounts,"%s %s %s %s %d %s %s\n",user.first_name,user.last_name,user.account_no,user.mail,&user.balance,user.password,user.city);
+        if(strcmp(user.account_no,account_no)==0 || strcmp(user.mail,account_no)==0)
+        {
+            strcpy(account_no,user.account_no);
+            account_found=TRUE;
+            if(strcmp(user.password,password)==0)
+            {
+                password_correct=TRUE;
+            }
+        }
+    }
+    fclose(accounts);
+
+    if(account_found==TRUE)
+    {
+        if(password_correct==TRUE)
+        {
+            printf("success");
+        }
+        else
+        {
+            printf("wrong password");
+        }
+    }
+    else
+    {
+        printf("account not found");
+    }
 }
