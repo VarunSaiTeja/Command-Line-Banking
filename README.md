@@ -43,7 +43,7 @@ To deposit amount
 
 (application name) deposit (account_no) (amount)
 
-"Command Line Banking" deposit 9010075670 9998889998 5000
+"Command Line Banking" deposit 9010075670 5000
 ___
 To withdraw amount
 
