@@ -53,7 +53,7 @@ To withdraw amount
 ___
 To transfer amount
 
-(application name) transfer (sender_account_no) (receiver account_no) (amount) (pin)
+(application name) transfer (sender_account_no) (receiver account_no) (amount) (sender pin)
 
-"Command Line Banking" transfer 9010075670 9999889999 5000 1000
+"Command Line Banking" transfer 9010075670 9123456789 5000 1000
 ___
